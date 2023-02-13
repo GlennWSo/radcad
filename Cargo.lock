@@ -3,6 +3,13 @@
 version = 3
 
 [[package]]
+name = "add_one"
+version = "0.1.0"
+dependencies = [
+ "pyo3",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

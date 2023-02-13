@@ -18,7 +18,7 @@ setup(
         RustExtension(
             "radcad.add_one.radd_one",
             binding=Binding.PyO3,
-            path="./hello/Cargo.toml",
+            path="./add_one/Cargo.toml",
         ),
     ],
     packages=["radcad.hello", "radcad.add_one"],
