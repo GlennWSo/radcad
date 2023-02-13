@@ -1,8 +1,12 @@
 use pyo3::prelude::*;
 
+pub fn increment(x: i32) -> i32 {
+    x + 1
+}
+
 #[pyfunction]
 pub fn add_one(x: i32) -> PyResult<i32> {
-    Ok(x + 1)
+    Ok(increment(x))
 }
 
 #[pymodule]

@@ -21,11 +21,16 @@ setup(
             path="./add_one/Cargo.toml",
         ),
     ],
-    packages=["radcad.hello", "radcad.add_one"],
+    packages=[
+        "radcad.hello",
+        "radcad.add_one",
+        "radcad.adder",
+    ],
     # tell setup that the root python source is inside py folder
     package_dir={
         "radcad.hello": "hello/py",
         "radcad.add_one": "add_one",
+        "radcad.adder": "adder",
     },
     # entry_points={
     #     "console_scripts": ["greet=hello:greet"],
