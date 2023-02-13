@@ -1,4 +1,5 @@
 # nixos
+.envrc
 .direnv
 result
 
