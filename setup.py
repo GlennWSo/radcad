@@ -4,21 +4,21 @@ from setuptools import setup
 from setuptools_rust import Binding, RustExtension
 
 setup(
-    name="hello",
-    version="0.13.37",
-    description="derp",
-    author="It me!",
+    name="radcad",
+    version="0.0.1",
+    description="cad stuff written in rust with python bindings",
+    author="Glenn",
     author_email="gward@python.net",
     rust_extensions=[
         RustExtension(
-            "hello.rhello",
+            "radcad.hello.rhello",
             binding=Binding.PyO3,
             path="./hello/Cargo.toml",
         )
     ],
-    packages=["hello"],
+    packages=["radcad.hello"],
     # tell setup that the root python source is inside py folder
-    package_dir={"hello": "hello/py"},
+    package_dir={"radcad.hello": "hello/py"},
     # entry_points={
     #     "console_scripts": ["greet=hello:greet"],
     # },

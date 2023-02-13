@@ -35,7 +35,7 @@ buildPythonPackage rec {
   ];
 
   pythonImportsCheck = [
-    "hello"
+    "radcad.hello"
   ];
 
   # meta = with lib; {
