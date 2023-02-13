@@ -13,11 +13,12 @@ setup(
         RustExtension(
             "hello.rhello",
             binding=Binding.PyO3,
+            path="./hello/Cargo.toml",
         )
     ],
     packages=["hello"],
     # tell setup that the root python source is inside py folder
-    package_dir={"hello": "py"},
+    package_dir={"hello": "hello/py"},
     # entry_points={
     #     "console_scripts": ["greet=hello:greet"],
     # },

@@ -19,6 +19,10 @@ buildPythonPackage rec {
   propagatedBuildInputs = [
   ];
 
+  # preBuild = ''
+  # cp Cargo.lock hello/
+  # '';
+
 	cargoDeps = rustPlatform.importCargoLock {
 	  lockFile = ./Cargo.lock;
 	}; 

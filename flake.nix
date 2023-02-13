@@ -23,7 +23,7 @@
         setupRust = py.setuptools-rust;
         rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
 
-        defaultPack = pkgs.callPackage ./hello/default.nix { 
+        defaultPack = pkgs.callPackage ./default.nix { 
           buildPythonPackage= py.buildPythonPackage;
           lib = pkgs.lib;
           rustPlatform = pkgs.rustPlatform;
