@@ -14,11 +14,19 @@ setup(
             "radcad.hello.rhello",
             binding=Binding.PyO3,
             path="./hello/Cargo.toml",
-        )
+        ),
+        RustExtension(
+            "radcad.add_one.radd_one",
+            binding=Binding.PyO3,
+            path="./hello/Cargo.toml",
+        ),
     ],
-    packages=["radcad.hello"],
+    packages=["radcad.hello", "radcad.add_one"],
     # tell setup that the root python source is inside py folder
-    package_dir={"radcad.hello": "hello/py"},
+    package_dir={
+        "radcad.hello": "hello/py",
+        "radcad.add_one": "add_one",
+    },
     # entry_points={
     #     "console_scripts": ["greet=hello:greet"],
     # },
