@@ -1,14 +1,15 @@
 [package]
-name = "add_one"
+name = "boolean"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "radd_one"
+name = "rboolean"
 crate-type = ["cdylib", "rlib"]
 
 
 [dependencies]
+parry3d-f64 = "0.13.0"
 pyo3 = { version = "0.15.1", features = ["extension-module"] }

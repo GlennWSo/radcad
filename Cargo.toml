@@ -2,6 +2,5 @@
 
 members = [
   "hello",
-  "add_one",
-  "adder",
+  "boolean",
 ]

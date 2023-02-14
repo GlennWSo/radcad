@@ -1,4 +1,5 @@
-{ 
+{
+numpy,
 buildPythonPackage,
 lib,
 rustPlatform,
@@ -17,6 +18,7 @@ buildPythonPackage rec {
 
 	# extra run time deps
   propagatedBuildInputs = [
+    numpy
   ];
 
   # preBuild = ''
