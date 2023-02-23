@@ -44,6 +44,7 @@
           requirements = ''
             ipython
             pyvista
+            webdiff
           '';
           providers = {
             _default = "wheel,nixpkgs,conda,sdist";
