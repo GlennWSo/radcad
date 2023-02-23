@@ -23,8 +23,15 @@
         setupRust = py.setuptools-rust;
         rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
 
+        pythonExtra = mach.mkPython {
+          requirements = ''
+            pyvista
+          '';
+        };
+
         defaultPack = pkgs.callPackage ./default.nix { 
           numpy = py.numpy;
+          pyvista = pythonExtra;
           buildPythonPackage= py.buildPythonPackage;
           lib = pkgs.lib;
           rustPlatform = pkgs.rustPlatform;
