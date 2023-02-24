@@ -25,25 +25,32 @@ def mesh2poly(mesh: core.Mesh) -> PolyData:
 def union(poly1: PolyData, poly2: PolyData) -> Optional[None]:
     m1 = poly2mesh(poly1)
     m2 = poly2mesh(poly2)
-    res = core.union(m1, m2)
+    res, region = core.union(m1, m2)
+    print(region)
     if res is None:
         raise Exception("core.union failed")
+    poly = mesh2poly(res)
+    poly["rid"] = region
     return mesh2poly(res)
 
 
 def common(poly1: PolyData, poly2: PolyData) -> Optional[None]:
     m1 = poly2mesh(poly1)
     m2 = poly2mesh(poly2)
-    res = core.common(m1, m2)
+    res, region = core.common(m1, m2)
     if res is None:
         raise Exception("core.common failed")
+    poly = mesh2poly(res)
+    poly["rid"] = region
     return mesh2poly(res)
 
 
 def diff(poly1: PolyData, poly2: PolyData) -> Optional[None]:
     m1 = poly2mesh(poly1)
     m2 = poly2mesh(poly2)
-    res = core.diff(m1, m2)
+    res, region = core.diff(m1, m2)
     if res is None:
         raise Exception("core.diff failed")
+    poly = mesh2poly(res)
+    poly["rid"] = region
     return mesh2poly(res)

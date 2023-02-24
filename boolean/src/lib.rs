@@ -1,6 +1,6 @@
 use parry3d_f64::na::{Isometry3, Point3, Vector3};
 use parry3d_f64::shape::{Cuboid, TriMesh, TriMeshFlags};
-use parry3d_f64::transformation::intersect_meshes;
+use parry3d_f64::transformation::intersect_meshes_track as intersect_meshes;
 
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
@@ -45,13 +45,13 @@ fn trimesh2mesh(trimesh: TriMesh) -> Mesh {
     (points, faces)
 }
 
-pub fn intersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Option<Mesh> {
+pub fn intersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Option<(Mesh, Vec<[u32; 3]>)> {
     let origo = Isometry3::identity();
     let m1 = mesh2trimesh(m1);
     let m2 = mesh2trimesh(m2);
     match intersect_meshes(&origo, &m1, flip1, &origo, &m2, flip2) {
         Ok(opval) => match opval {
-            Some(val) => Some(trimesh2mesh(val)),
+            Some((tri, inds)) => Some((trimesh2mesh(tri), inds)),
             None => None,
         },
         Err(n) => {
@@ -66,7 +66,7 @@ use pyo3::create_exception;
 create_exception!(module, MyError, pyo3::exceptions::PyException);
 
 #[pyfunction]
-fn pyintersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> PyResult<Mesh> {
+fn pyintersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> PyResult<(Mesh, Vec<[u32; 3]>)> {
     match intersect(m1, m2, flip1, flip2) {
         Some(val) => Ok(val),
         None => Err(MyError::new_err("derp")),

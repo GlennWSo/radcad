@@ -14,9 +14,12 @@ Points = List[Point]
 Tri = Tuple[int, int, int]
 Faces = List[Tri]
 Mesh = Tuple[Points, Faces]
+Region = List[bool]
 
 
-def intersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Optional[Mesh]:
+def intersect(
+    m1: Mesh, m2: Mesh, flip1: bool, flip2: bool
+) -> Optional[Tuple[Mesh, Region]]:
     """
     calculates boolean operation
     the flip flags determine the type of boolean operation
@@ -24,7 +27,10 @@ def intersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Optional[Mesh]:
     returns "None" if the boolean operation fails or the input meshes have no overlap
     """
     # TODO implement exception
-    return pyintersect(m1, m2, flip1, flip2)
+    mesh, inds2 = pyintersect(m1, m2, flip1, flip2)
+    inds2 = set(inds2)
+    region2 = [any((i in face) for i in inds2) for face in mesh[1]]
+    return mesh, region2
 
 
 def union(m1: Mesh, m2: Mesh) -> Optional[Mesh]:
@@ -34,7 +40,8 @@ def union(m1: Mesh, m2: Mesh) -> Optional[Mesh]:
     # TODO implement exception
     flip1 = True
     flip2 = True
-    return pyintersect(m1, m2, flip1, flip2)
+
+    return intersect(m1, m2, flip1, flip2)
 
 
 def common(m1: Mesh, m2: Mesh) -> Optional[Mesh]:
