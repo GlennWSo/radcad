@@ -5,28 +5,45 @@
     mach-nix.url = "mach-nix/3.5.0";
 
   };
-  inputs.rust-overlay =  {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+  # inputs.rust-overlay =  {
+  #     url = "github:oxalica/rust-overlay";
+  #     inputs.nixpkgs.follows = "nixpkgs";
+  #   };
 
-  outputs = { self, nixpkgs, flake-utils, mach-nix, rust-overlay }:
+  outputs = { self, nixpkgs, flake-utils, mach-nix }:
 
     flake-utils.lib.eachDefaultSystem (system:
       let
-        overlays = [ (import rust-overlay)];
+        # overlays = [ (import rust-overlay)];
         pkgs = import nixpkgs {
-          inherit overlays system;
+          inherit  system;
         };
         py = pkgs.python39Packages;
         mach = mach-nix.lib.${system};
-        rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+        # rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
 
         pythonExtra = mach.mkPython {
+          python = "python39";
           requirements = ''
             pyvista
           '';
         };
+
+
+        libPath = pkgs.lib.makeLibraryPath [
+            pkgs.stdenv.cc.cc.lib
+            pkgs.libglvnd
+            pkgs.libGLU
+            pkgs.fontconfig
+            pkgs.xorg.libX11
+            pkgs.xorg.libXrender
+            pkgs.xorg.libXcursor
+            pkgs.xorg.libXfixes
+            pkgs.xorg.libXft
+            pkgs.xorg.libXinerama
+            pkgs.xorg.libXmu
+            pkgs.zlib
+          ];
 
         defaultPack = pkgs.callPackage ./default.nix { 
           numpy = py.numpy;
@@ -36,20 +53,6 @@
           rustPlatform = pkgs.rustPlatform;
           setuptools-rust = py.setuptools-rust;
         };
-
-        pyEnv = mach.mkPython {
-          requirements = ''
-            ipython
-            pyvista
-            webdiff
-          '';
-          providers = {
-            _default = "wheel,nixpkgs,conda,sdist";
-            pyvista = "wheel";
-          };
-          packagesExtra = [
-          ];
-        };
        
       in
         {
@@ -58,13 +61,15 @@
           devShell = pkgs.mkShell{
             name = "pyrust";
             buildInputs = [
-              defaultPack
-              py.ipython
-              pyEnv
               pkgs.nil
-              rust
-              py.setuptools-rust
+              py.pip
+              pkgs.rustPlatform.rust.cargo
+              pkgs.rustPlatform.rust.rustc
             ];
+            shellHook=''
+              echo hello
+              export LD_LIBRARY_PATH=${libPath}
+            '';
           };
         }
     );

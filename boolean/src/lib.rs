@@ -45,7 +45,7 @@ fn trimesh2mesh(trimesh: TriMesh) -> Mesh {
     (points, faces)
 }
 
-pub fn intersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Option<(Mesh, Vec<[u32; 3]>)> {
+pub fn intersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Option<(Mesh, Vec<usize>)> {
     let origo = Isometry3::identity();
     let m1 = mesh2trimesh(m1);
     let m2 = mesh2trimesh(m2);
@@ -66,22 +66,15 @@ use pyo3::create_exception;
 create_exception!(module, MyError, pyo3::exceptions::PyException);
 
 #[pyfunction]
-fn pyintersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> PyResult<(Mesh, Vec<[u32; 3]>)> {
+fn pyintersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> PyResult<(Mesh, Vec<usize>)> {
     match intersect(m1, m2, flip1, flip2) {
         Some(val) => Ok(val),
         None => Err(MyError::new_err("derp")),
     }
 }
 
-#[pyfunction]
-fn pycube(b: f64) -> PyResult<Mesh> {
-    let c = brick(b);
-    Ok(trimesh2mesh(c))
-}
-
 #[pymodule]
 fn rboolean(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(pycube, m)?)?;
     m.add_function(wrap_pyfunction!(pyintersect, m)?)?;
     Ok(())
 }

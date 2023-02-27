@@ -22,16 +22,30 @@ def mesh2poly(mesh: core.Mesh) -> PolyData:
     return PolyData(mesh[0], polys)
 
 
-def union(poly1: PolyData, poly2: PolyData) -> Optional[None]:
+def boolean_function(
+    poly1: PolyData,
+    poly2: PolyData,
+    boolean_operator,
+) -> Optional[PolyData]:
     m1 = poly2mesh(poly1)
     m2 = poly2mesh(poly2)
-    res, region = core.union(m1, m2)
-    print(region)
+    res, tracks = boolean_operator(m1, m2)
     if res is None:
         raise Exception("core.union failed")
     poly = mesh2poly(res)
-    poly["rid"] = region
-    return mesh2poly(res)
+    n_faces = len(poly.faces) // 4
+    poly["rid"] = np.zeros(n_faces)
+
+    for i, (s0, s1) in enumerate(zip([0] + tracks, tracks + [n_faces])):
+        poly["rid"][s0:s1] = i
+    return poly
+
+
+def union(poly1: PolyData, poly2: PolyData) -> Optional[PolyData]:
+    """
+    TODO add documentation
+    """
+    return boolean_function(poly1, poly2, core.union)
 
 
 def common(poly1: PolyData, poly2: PolyData) -> Optional[None]:
@@ -41,16 +55,11 @@ def common(poly1: PolyData, poly2: PolyData) -> Optional[None]:
     if res is None:
         raise Exception("core.common failed")
     poly = mesh2poly(res)
-    poly["rid"] = region
-    return mesh2poly(res)
+    return mesh2poly(res), region
 
 
 def diff(poly1: PolyData, poly2: PolyData) -> Optional[None]:
-    m1 = poly2mesh(poly1)
-    m2 = poly2mesh(poly2)
-    res, region = core.diff(m1, m2)
-    if res is None:
-        raise Exception("core.diff failed")
-    poly = mesh2poly(res)
-    poly["rid"] = region
-    return mesh2poly(res)
+    """
+    TODO add documentation
+    """
+    return boolean_function(poly1, poly2, core.diff)
