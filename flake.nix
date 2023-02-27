@@ -20,7 +20,6 @@
         };
         py = pkgs.python39Packages;
         mach = mach-nix.lib.${system};
-        setupRust = py.setuptools-rust;
         rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
 
         pythonExtra = mach.mkPython {
@@ -37,8 +36,6 @@
           rustPlatform = pkgs.rustPlatform;
           setuptools-rust = py.setuptools-rust;
         };
-
-         
 
         pyEnv = mach.mkPython {
           requirements = ''
@@ -70,6 +67,5 @@
             ];
           };
         }
-      
     );
 }
