@@ -12,8 +12,8 @@ from .fun_tools import cumsum, stagger
 
 def poly2mesh(poly: PolyData) -> core.Mesh:
     poly = poly.triangulate()
-    points = poly.points
-    faces = poly.faces.reshape((-1, 4))[:, 1:]
+    points = poly.points.copy()
+    faces = poly.faces.reshape((-1, 4))[:, 1:].copy()
     return (points, faces)
 
 
@@ -54,6 +54,9 @@ def common(poly1: PolyData, poly2: PolyData) -> Optional[None]:
     TODO add documentation
     """
     return boolean_function(poly1, poly2, core.common)
+
+
+intersection = common
 
 
 def diff(poly1: PolyData, poly2: PolyData) -> Optional[None]:
