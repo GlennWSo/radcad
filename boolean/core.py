@@ -19,7 +19,7 @@ Tracks = List[int]
 Result = Optional[Tuple[Mesh, Tracks]]
 
 
-def intersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Result:
+def universal(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Result:
     """
     calculates boolean operation
     the flip flags determine the type of boolean operation
@@ -31,18 +31,31 @@ def intersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Result:
 
 
 def union(m1: Mesh, m2: Mesh) -> Result:
+    """
+    part in m1 or m2
+    """
     flip1 = True
     flip2 = True
-    return intersect(m1, m2, flip1, flip2)
+    return universal(m1, m2, flip1, flip2)
 
 
 def common(m1: Mesh, m2: Mesh) -> Result:
+    """
+    part in both m1 and m2
+    aka intersection
+    """
     flip1 = False
     flip2 = False
-    return intersect(m1, m2, flip1, flip2)
+    return universal(m1, m2, flip1, flip2)
+
+
+intersection = common
 
 
 def diff(m1: Mesh, m2: Mesh) -> Result:
-    flip1 = True
-    flip2 = False
-    return intersect(m1, m2, flip1, flip2)
+    """
+    the part in m1 but not in m2
+    """
+    flip1 = False
+    flip2 = True
+    return universal(m1, m2, flip1, flip2)
