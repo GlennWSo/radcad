@@ -237,7 +237,7 @@ dependencies = [
 [[package]]
 name = "parry3d-f64"
 version = "0.13.0"
-source = "git+https://github.com/GlennWSo/parry?branch=boolean_tracks#773cb929af81ff3bd1ba49bea713ca47f245ab16"
+source = "git+https://github.com/GlennWSo/parry?branch=track_index#773cb929af81ff3bd1ba49bea713ca47f245ab16"
 dependencies = [
  "approx",
  "arrayvec",
