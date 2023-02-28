@@ -7,6 +7,7 @@ from pyvista import PolyData
 
 # local
 from radcad.boolean import core
+from radcad.fun_tools import cumsum, stagger
 
 
 def poly2mesh(poly: PolyData) -> core.Mesh:
@@ -34,16 +35,10 @@ def boolean_function(
         raise Exception("core.union failed")
     poly = mesh2poly(res)
 
-    def cumsum(inds):
-        agg = 0
-        for i in inds:
-            yield agg
-            agg += i
-
     n_faces = len(poly.faces) // 4
     poly["rid"] = np.zeros(n_faces)
-    for i, s in enumerate(cumsum(tracks)):
-        poly["rid"][s:] = i
+    for i, (s0, s1) in enumerate(stagger(cumsum(tracks))):
+        poly["rid"][s0:s1] = i
     return poly
 
 
