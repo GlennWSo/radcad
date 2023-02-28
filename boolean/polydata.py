@@ -6,8 +6,8 @@ import numpy as np
 from pyvista import PolyData
 
 # local
-from radcad.boolean import core
-from radcad.fun_tools import cumsum, stagger
+from . import core
+from .fun_tools import cumsum, stagger
 
 
 def poly2mesh(poly: PolyData) -> core.Mesh:
