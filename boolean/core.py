@@ -39,10 +39,10 @@ def union(m1: Mesh, m2: Mesh) -> Result:
 def common(m1: Mesh, m2: Mesh) -> Result:
     flip1 = False
     flip2 = False
-    return pyintersect(m1, m2, flip1, flip2)
+    return intersect(m1, m2, flip1, flip2)
 
 
 def diff(m1: Mesh, m2: Mesh) -> Result:
     flip1 = True
     flip2 = False
-    return pyintersect(m1, m2, flip1, flip2)
+    return intersect(m1, m2, flip1, flip2)
