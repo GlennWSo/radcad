@@ -33,11 +33,17 @@ def boolean_function(
     if res is None:
         raise Exception("core.union failed")
     poly = mesh2poly(res)
+
+    def cumsum(inds):
+        agg = 0
+        for i in inds:
+            yield agg
+            agg += i
+
     n_faces = len(poly.faces) // 4
     poly["rid"] = np.zeros(n_faces)
-
-    for i, (s0, s1) in enumerate(zip([0] + tracks, tracks + [n_faces])):
-        poly["rid"][s0:s1] = i
+    for i, s in enumerate(cumsum(tracks)):
+        poly["rid"][s:] = i
     return poly
 
 
@@ -49,13 +55,10 @@ def union(poly1: PolyData, poly2: PolyData) -> Optional[PolyData]:
 
 
 def common(poly1: PolyData, poly2: PolyData) -> Optional[None]:
-    m1 = poly2mesh(poly1)
-    m2 = poly2mesh(poly2)
-    res, region = core.common(m1, m2)
-    if res is None:
-        raise Exception("core.common failed")
-    poly = mesh2poly(res)
-    return mesh2poly(res), region
+    """
+    TODO add documentation
+    """
+    return boolean_function(poly1, poly2, core.common)
 
 
 def diff(poly1: PolyData, poly2: PolyData) -> Optional[None]:
