@@ -1,7 +1,7 @@
 from typing import Generator, Iterable
 
 
-def cumsum(a: Itarable) -> Generator:
+def cumsum(a: Iterable) -> Generator:
     """
     the cumalative sum starting from 0
     """
