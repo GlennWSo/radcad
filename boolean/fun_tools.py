@@ -1,13 +1,24 @@
-def cumsum(inds):
+from typing import Generator, Iterable
+
+
+def cumsum(a: Itarable) -> Generator:
+    """
+    the cumalative sum starting from 0
+    """
     agg = 0
     yield agg
-    for i in inds:
+    for i in a:
         agg += i
         yield agg
 
-def stagger(gen):
-    old = next(gen)
-    for new in gen:
+
+def stagger(a: Iterable) -> Generator:
+    """
+    yield pairs of the newest and second newest
+    """
+    it = iter(a)
+
+    old = next(it)
+    for new in it:
         yield old, new
         old = new
-
