@@ -65,6 +65,7 @@
               py.pip
               pkgs.rustPlatform.rust.cargo
               pkgs.rustPlatform.rust.rustc
+              pkgs.rust-analyzer
             ];
             shellHook=''
               echo hello
