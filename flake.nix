@@ -5,71 +5,63 @@
     mach-nix.url = "mach-nix/3.5.0";
 
   };
-  # inputs.rust-overlay =  {
-  #     url = "github:oxalica/rust-overlay";
-  #     inputs.nixpkgs.follows = "nixpkgs";
-  #   };
 
-  outputs = { self, nixpkgs, flake-utils, mach-nix }:
+  outputs = { self, nixpkgs, flake-utils, mach-nix, }:
 
     flake-utils.lib.eachDefaultSystem (system:
       let
-        # overlays = [ (import rust-overlay)];
         pkgs = import nixpkgs {
           inherit  system;
         };
         py = pkgs.python39Packages;
         mach = mach-nix.lib.${system};
-        # rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
 
-        pythonExtra = mach.mkPython {
+        pyEnv = mach.mkPython {
           python = "python39";
           requirements = ''
             pyvista
+            pip
           '';
         };
 
-
-        libPath = pkgs.lib.makeLibraryPath [
-            pkgs.stdenv.cc.cc.lib
-            pkgs.libglvnd
-            pkgs.libGLU
-            pkgs.fontconfig
-            pkgs.xorg.libX11
-            pkgs.xorg.libXrender
-            pkgs.xorg.libXcursor
-            pkgs.xorg.libXfixes
-            pkgs.xorg.libXft
-            pkgs.xorg.libXinerama
-            pkgs.xorg.libXmu
-            pkgs.zlib
-          ];
-
-        defaultPack = pkgs.callPackage ./default.nix { 
-          numpy = py.numpy;
-          pyvista = pythonExtra;
-          buildPythonPackage= py.buildPythonPackage;
-          lib = pkgs.lib;
-          rustPlatform = pkgs.rustPlatform;
-          setuptools-rust = py.setuptools-rust;
-        };
-       
+        pyLibPath = pkgs.lib.makeLibraryPath [
+          pyEnv
+        ];
       in
         {
-          packages.default =  defaultPack;
-
-          devShell = pkgs.mkShell{
+          devShell = pkgs.mkShell rec {
             name = "pyrust";
+            venvDir = ".venv";
+
             buildInputs = [
               pkgs.nil
-              py.pip
+              pyEnv
               pkgs.rustPlatform.rust.cargo
               pkgs.rustPlatform.rust.rustc
               pkgs.rust-analyzer
             ];
-            shellHook=''
-              echo hello
-              export LD_LIBRARY_PATH=${libPath}
+
+            shellHook = ''
+              SOURCE_DATE_EPOCH=$(date +%s)
+
+              if [ -d "${venvDir}" ]; then
+                echo "Skipping venv creation, '${venvDir}' already exists"
+              else
+                echo "Creating new venv environment in path: '${venvDir}'"
+                # Note that the module venv was only introduced in python 3, so for 2.7
+                # this needs to be replaced with a call to virtualenv
+                ${pyEnv.python.interpreter} -m venv "${venvDir}"
+              fi
+
+              # Under some circumstances it might be necessary to add your virtual
+              # environment to PYTHONPATH, which you can do here too;
+              # PYTHONPATH=$PWD/${venvDir}/${pyEnv.python.sitePackages}/:$PYTHONPATH
+
+              source "${venvDir}/bin/activate"
+              # pip install -r requirements.txt
+              pip install  .               
+
+              export PYTHONPATH=${pyLibPath}/python3.9/site-packages/:$PYTHONPATH
             '';
           };
         }
