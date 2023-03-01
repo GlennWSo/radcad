@@ -5,71 +5,72 @@
     mach-nix.url = "mach-nix/3.5.0";
 
   };
-  inputs.rust-overlay =  {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
-  outputs = { self, nixpkgs, flake-utils, mach-nix, rust-overlay }:
+  outputs = { self, nixpkgs, flake-utils, mach-nix, }:
 
     flake-utils.lib.eachDefaultSystem (system:
       let
-        overlays = [ (import rust-overlay)];
         pkgs = import nixpkgs {
-          inherit overlays system;
+          inherit  system;
         };
         py = pkgs.python39Packages;
         mach = mach-nix.lib.${system};
-        setupRust = py.setuptools-rust;
-        rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
-
-        pythonExtra = mach.mkPython {
-          requirements = ''
-            pyvista
-          '';
-        };
-
-        defaultPack = pkgs.callPackage ./default.nix { 
-          numpy = py.numpy;
-          pyvista = pythonExtra;
-          buildPythonPackage= py.buildPythonPackage;
-          lib = pkgs.lib;
-          rustPlatform = pkgs.rustPlatform;
-          setuptools-rust = py.setuptools-rust;
-        };
-
-         
 
         pyEnv = mach.mkPython {
+          python = "python39";
           requirements = ''
-            ipython
             pyvista
-            webdiff
+            pip
           '';
-          providers = {
-            _default = "wheel,nixpkgs,conda,sdist";
-            pyvista = "wheel";
-          };
-          packagesExtra = [
-          ];
         };
-       
+
+        pyLibPath = pkgs.lib.makeLibraryPath [
+          pyEnv
+        ];
+        glibPath = pkgs.lib.makeLibraryPath [
+          pkgs.glibc
+        ];
       in
         {
-          packages.default =  defaultPack;
-
-          devShell = pkgs.mkShell{
+          devShell = pkgs.mkShell rec {
             name = "pyrust";
+            venvDir = ".venv";
+
             buildInputs = [
-              defaultPack
-              py.ipython
-              pyEnv
               pkgs.nil
-              rust
-              py.setuptools-rust
+              py.python
+              pyEnv
+              pkgs.glibc
+              pkgs.rustPlatform.rust.cargo
+              pkgs.rustPlatform.rust.rustc
+              pkgs.rust-analyzer
             ];
+
+            shellHook = ''
+              SOURCE_DATE_EPOCH=$(date +%s)
+
+              if [ -d "${venvDir}" ]; then
+                echo "Skipping venv creation, '${venvDir}' already exists"
+                source "${venvDir}/bin/activate"
+              else
+                echo "Creating new venv environment in path: '${venvDir}'"
+                # Note that the module venv was only introduced in python 3, so for 2.7
+                # this needs to be replaced with a call to virtualenv
+                ${py.python.interpreter} -m venv "${venvDir}"
+                source "${venvDir}/bin/activate"
+                pip install  .               
+                pip install -e .    
+              fi
+
+              # Under some circumstances it might be necessary to add your virtual
+              # environment to PYTHONPATH, which you can do here too;
+              # PYTHONPATH=$PWD/${venvDir}/${pyEnv.python.sitePackages}/:$PYTHONPATH
+              export PYTHONPATH=${pyLibPath}/python3.9/site-packages/:$PYTHONPATH
+
+              # pip install -r requirements.txt
+
+            '';
           };
         }
-      
     );
 }

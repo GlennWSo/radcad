@@ -28,7 +28,11 @@ buildPythonPackage rec {
 
 	cargoDeps = rustPlatform.importCargoLock {
 	  lockFile = ./Cargo.lock;
-	}; 
+    outputHashes = { "parry3d-f64-0.13.0" = "sha256-2BHcDDkVYET9wNddVXq2yE/QJeYc7GNlDZHfeD3k9kM=";};
+    }; 
+
+  buildInputs = [
+  ];
 
   nativeBuildInputs =  [
     setuptools-rust

@@ -1,6 +1,6 @@
-use parry3d_f64::na::{Isometry3, Point3, Vector3};
-use parry3d_f64::shape::{Cuboid, TriMesh, TriMeshFlags};
-use parry3d_f64::transformation::intersect_meshes;
+use parry3d_f64::na::{Isometry3, Point3 };
+use parry3d_f64::shape::{TriMesh, TriMeshFlags};
+use parry3d_f64::transformation::tracked_intersection as intersect_meshes;
 
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
@@ -10,14 +10,6 @@ fn prepare_mesh(mesh: &mut TriMesh) {
     mesh.set_flags(flags).expect("mesh should be manifold");
 }
 
-fn brick(b: f64) -> TriMesh {
-    let halfb: f64 = b / 2.0;
-    let dims = Vector3::new(halfb, halfb, halfb);
-
-    let mut mesh = TriMesh::from(Cuboid::new(dims));
-    prepare_mesh(&mut mesh);
-    mesh
-}
 
 type Points = Vec<[f64; 3]>;
 type Faces = Vec<[u32; 3]>;
@@ -45,13 +37,13 @@ fn trimesh2mesh(trimesh: TriMesh) -> Mesh {
     (points, faces)
 }
 
-pub fn intersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Option<Mesh> {
+pub fn intersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> Option<(Mesh, Vec<usize>)> {
     let origo = Isometry3::identity();
     let m1 = mesh2trimesh(m1);
     let m2 = mesh2trimesh(m2);
     match intersect_meshes(&origo, &m1, flip1, &origo, &m2, flip2) {
         Ok(opval) => match opval {
-            Some(val) => Some(trimesh2mesh(val)),
+            Some((tri, inds)) => Some((trimesh2mesh(tri), inds)),
             None => None,
         },
         Err(n) => {
@@ -66,22 +58,15 @@ use pyo3::create_exception;
 create_exception!(module, MyError, pyo3::exceptions::PyException);
 
 #[pyfunction]
-fn pyintersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> PyResult<Mesh> {
+fn pyintersect(m1: Mesh, m2: Mesh, flip1: bool, flip2: bool) -> PyResult<(Mesh, Vec<usize>)> {
     match intersect(m1, m2, flip1, flip2) {
         Some(val) => Ok(val),
         None => Err(MyError::new_err("derp")),
     }
 }
 
-#[pyfunction]
-fn pycube(b: f64) -> PyResult<Mesh> {
-    let c = brick(b);
-    Ok(trimesh2mesh(c))
-}
-
 #[pymodule]
 fn rboolean(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(pycube, m)?)?;
     m.add_function(wrap_pyfunction!(pyintersect, m)?)?;
     Ok(())
 }

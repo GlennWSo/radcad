@@ -11,5 +11,5 @@ crate-type = ["cdylib", "rlib"]
 
 
 [dependencies]
-parry3d-f64 = "0.13.0"
+parry3d-f64 = { git = "https://github.com/GlennWSo/parry", branch = "track_index" }
 pyo3 = { version = "0.15.1", features = ["extension-module"] }
