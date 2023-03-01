@@ -1,6 +1,6 @@
-use parry3d_f64::na::{Isometry3, Point3, Vector3};
-use parry3d_f64::shape::{Cuboid, TriMesh, TriMeshFlags};
-use parry3d_f64::transformation::intersect_meshes_track as intersect_meshes;
+use parry3d_f64::na::{Isometry3, Point3 };
+use parry3d_f64::shape::{TriMesh, TriMeshFlags};
+use parry3d_f64::transformation::tracked_intersection as intersect_meshes;
 
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
@@ -10,14 +10,6 @@ fn prepare_mesh(mesh: &mut TriMesh) {
     mesh.set_flags(flags).expect("mesh should be manifold");
 }
 
-fn brick(b: f64) -> TriMesh {
-    let halfb: f64 = b / 2.0;
-    let dims = Vector3::new(halfb, halfb, halfb);
-
-    let mut mesh = TriMesh::from(Cuboid::new(dims));
-    prepare_mesh(&mut mesh);
-    mesh
-}
 
 type Points = Vec<[f64; 3]>;
 type Faces = Vec<[u32; 3]>;
