@@ -27,6 +27,9 @@
         pyLibPath = pkgs.lib.makeLibraryPath [
           pyEnv
         ];
+        glibPath = pkgs.lib.makeLibraryPath [
+          pkgs.glibc
+        ];
       in
         {
           devShell = pkgs.mkShell rec {
@@ -35,7 +38,9 @@
 
             buildInputs = [
               pkgs.nil
+              py.python
               pyEnv
+              pkgs.glibc
               pkgs.rustPlatform.rust.cargo
               pkgs.rustPlatform.rust.rustc
               pkgs.rust-analyzer
@@ -50,16 +55,16 @@
                 echo "Creating new venv environment in path: '${venvDir}'"
                 # Note that the module venv was only introduced in python 3, so for 2.7
                 # this needs to be replaced with a call to virtualenv
-                ${pyEnv.python.interpreter} -m venv "${venvDir}"
+                ${py.python.interpreter} -m venv "${venvDir}"
               fi
 
               # Under some circumstances it might be necessary to add your virtual
               # environment to PYTHONPATH, which you can do here too;
               # PYTHONPATH=$PWD/${venvDir}/${pyEnv.python.sitePackages}/:$PYTHONPATH
 
-              source "${venvDir}/bin/activate"
+              # source "${venvDir}/bin/activate"
               # pip install -r requirements.txt
-              pip install  .               
+              # pip install  .               
 
               export PYTHONPATH=${pyLibPath}/python3.9/site-packages/:$PYTHONPATH
             '';
