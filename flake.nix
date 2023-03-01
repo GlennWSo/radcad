@@ -51,22 +51,24 @@
 
               if [ -d "${venvDir}" ]; then
                 echo "Skipping venv creation, '${venvDir}' already exists"
+                source "${venvDir}/bin/activate"
               else
                 echo "Creating new venv environment in path: '${venvDir}'"
                 # Note that the module venv was only introduced in python 3, so for 2.7
                 # this needs to be replaced with a call to virtualenv
                 ${py.python.interpreter} -m venv "${venvDir}"
+                source "${venvDir}/bin/activate"
+                pip install  .               
+                pip install -e .    
               fi
 
               # Under some circumstances it might be necessary to add your virtual
               # environment to PYTHONPATH, which you can do here too;
               # PYTHONPATH=$PWD/${venvDir}/${pyEnv.python.sitePackages}/:$PYTHONPATH
-
-              # source "${venvDir}/bin/activate"
-              # pip install -r requirements.txt
-              # pip install  .               
-
               export PYTHONPATH=${pyLibPath}/python3.9/site-packages/:$PYTHONPATH
+
+              # pip install -r requirements.txt
+
             '';
           };
         }
