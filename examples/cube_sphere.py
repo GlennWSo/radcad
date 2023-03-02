@@ -1,4 +1,4 @@
-from radcad.boolean.polydata import union, diff, common
+from rscad.boolean.polydata import union, diff, common
 import pyvista as pv
 
 cube = pv.Cube()
