@@ -3,7 +3,8 @@ Rusty Cad utils
 
 ## benchmark
 
-results form boolean diff using on spheres using diffrent libraries
+boolean diff using on spheres using diffrent libraries
+![inputs](./examples/spheres.jpg)
 
 prepare benchmark
 >pip install pymadcad polydata
@@ -16,7 +17,6 @@ run benchmark
 out:
 >sphere1 has 1680 faces
 >sphere2 has 26880 faces
-![inputs](./examples/spheres.jpg)
 
 >rscad diff time: 0.188
 >n open edges: 0
