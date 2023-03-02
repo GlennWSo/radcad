@@ -2,13 +2,32 @@
 
 Rusty Cad utils
 
+## install
+```
+pip install rscad
+```
+
+## use
+```python
+from rscad.boolean.polydata import diff, union, common
+import pyvista as pv
+
+cube = pv.Cube()
+sphere = pv.Sphere(0.6)
+diff(cube, sphere).plot()
+union(cube, sphere).plot()
+common(cube, sphere).plot()
+
+```
+
+
 ## benchmark
 
 boolean diff using on spheres using diffrent libraries
 ![inputs](./examples/spheres.jpg)
 
 prepare benchmark
-```
+```shell
 pip install pymadcad polydata
 pip install pymadcad polydata
 pip install . # or rscad
