@@ -27,8 +27,6 @@
           pkgs.glibc
         ];
         buildTime = [
-          py.twine
-          py.build
           py.setuptools
           py.setuptools-rust
           pkgs.rustPlatform.rust.cargo
@@ -39,6 +37,7 @@
           pkgs.nil
           py.twine
           py.build
+          py.wheel
         ];
         
     
