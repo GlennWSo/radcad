@@ -21,21 +21,34 @@
         py = pkgs.python310Packages;
         pv = pyvista.packages.${system}.pyvista;
 
+        runTime = [
+          pv
+          py.python
+          pkgs.glibc
+        ];
+        buildTime = [
+          py.setuptools
+          py.setuptools-rust
+          pkgs.rustPlatform.rust.cargo
+          pkgs.rustPlatform.rust.rustc
+        ];
+        devTools = [
+          pkgs.rust-analyzer
+          pkgs.nil
+          py.twine
+          py.build
+          py.wheel
+        ];
+        
+    
+
       in
         {
           devShell = pkgs.mkShell rec {
             name = "pyrust";
             venvDir = ".venv";
 
-            buildInputs = [
-              pkgs.nil
-              py.python
-              pv
-              pkgs.glibc
-              pkgs.rustPlatform.rust.cargo
-              pkgs.rustPlatform.rust.rustc
-              pkgs.rust-analyzer
-            ];
+            buildInputs = runTime ++ buildTime ++ devTools;
 
             shellHook = ''
               SOURCE_DATE_EPOCH=$(date +%s)
