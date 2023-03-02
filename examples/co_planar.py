@@ -1,7 +1,7 @@
 from warnings import warn
 
 
-from radcad.boolean.polydata import diff, common, union
+from rscad.boolean.polydata import diff, common, union
 import pyvista as pv
 
 co_planar_buggs = """
