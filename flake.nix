@@ -2,34 +2,25 @@
   inputs =  {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    mach-nix.url = "mach-nix/3.5.0";
+    pyvista = {
+      type = "github";
+      owner = "GlennWSo";
+      repo = "pyvista";
+      rev = "c871273f8c75cc78b187601048aca46554fd4336";
+    };
 
   };
 
-  outputs = { self, nixpkgs, flake-utils, mach-nix, }:
+  outputs = { self, nixpkgs, flake-utils, pyvista, }:
 
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit  system;
         };
-        py = pkgs.python39Packages;
-        mach = mach-nix.lib.${system};
+        py = pkgs.python310Packages;
+        pv = pyvista.packages.${system}.pyvista;
 
-        pyEnv = mach.mkPython {
-          python = "python39";
-          requirements = ''
-            pyvista
-            pip
-          '';
-        };
-
-        pyLibPath = pkgs.lib.makeLibraryPath [
-          pyEnv
-        ];
-        glibPath = pkgs.lib.makeLibraryPath [
-          pkgs.glibc
-        ];
       in
         {
           devShell = pkgs.mkShell rec {
@@ -39,7 +30,7 @@
             buildInputs = [
               pkgs.nil
               py.python
-              pyEnv
+              pv
               pkgs.glibc
               pkgs.rustPlatform.rust.cargo
               pkgs.rustPlatform.rust.rustc
@@ -62,12 +53,6 @@
                 pip install -e .    
               fi
 
-              # Under some circumstances it might be necessary to add your virtual
-              # environment to PYTHONPATH, which you can do here too;
-              # PYTHONPATH=$PWD/${venvDir}/${pyEnv.python.sitePackages}/:$PYTHONPATH
-              export PYTHONPATH=${pyLibPath}/python3.9/site-packages/:$PYTHONPATH
-
-              # pip install -r requirements.txt
 
             '';
           };
