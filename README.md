@@ -15,7 +15,7 @@ pip install . # or rscad
 ```
 
 run benchmark
-> python examples/sphers_bench
+`python examples/sphers_bench`
 
 out:
 ```
