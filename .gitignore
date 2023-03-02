@@ -1,3 +1,6 @@
+# secrets
+.token
+
 # nixos
 .envrc
 .direnv
