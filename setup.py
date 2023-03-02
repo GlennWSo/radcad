@@ -30,6 +30,7 @@ setup(
         "rscad.hello": "hello/py",
         "rscad.boolean": "boolean",
     },
+    install_requires= ["pyvista", "numpy"]
     # entry_points={
     #     "console_scripts": ["greet=hello:greet"],
     # },
