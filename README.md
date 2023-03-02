@@ -3,6 +3,7 @@
 Rusty Cad utils
 
 ## install
+wheels have been created for linux
 ```
 pip install rscad
 ```
