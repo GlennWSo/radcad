@@ -1,7 +1,8 @@
-use pyo3::prelude::*;
 extern crate nalgebra as na;
 use na::{DVector, Vector3, OMatrix, Dyn, U3};
-// use rayon::prelude::*;
+
+use pyo3::prelude::*;
+
 
 type _Normal = Vector3<f64>;
 /// used to represent angle in radians
@@ -18,14 +19,13 @@ type _Angles = DVector<f64>;
 }
 
 
+type Normal = [f64; 3];
+/// used to represent angle in radians
+type Normals = Vec<Normal>;
+type Angles = Vec<f64>;
+
 #[pymodule]
-fn rconcave(_py: Python, m: &PyModule) -> PyResult<()> {
-    
-    type Normal = [f64; 3];
-    /// used to represent angle in radians
-    type Normals = Vec<Normal>;
-    type Angles = Vec<f64>;
-    
+fn rdraft(_py: Python, m: &PyModule) -> PyResult<()> {
     /// Finds the concave path around the points, the concavity factor controlls how concave/jagged the result is.
     /// concavity=0 -> the uncomprimising concave path. 
     /// concavity=big num -> the convex path
