@@ -5,7 +5,7 @@ from setuptools_rust import Binding, RustExtension
 
 setup(
     name="rscad",
-    version="0.0.1",
+    version="0.0.2",
     description="rusty cad utils",
     author="Glenn",
     author_email="gward@python.net",
