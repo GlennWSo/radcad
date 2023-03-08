@@ -16,6 +16,11 @@ setup(
             path="./hello/Cargo.toml",
         ),
         RustExtension(
+            "rscad.concave.rconcave",
+            binding=Binding.PyO3,
+            path="./concave/Cargo.toml",
+        ),
+        RustExtension(
             "rscad.boolean.rboolean",
             binding=Binding.PyO3,
             path="./boolean/Cargo.toml",
@@ -30,7 +35,7 @@ setup(
         "rscad.hello": "hello/py",
         "rscad.boolean": "boolean",
     },
-    install_requires= ["pyvista", "numpy"]
+    install_requires=["pyvista", "numpy"],
     # entry_points={
     #     "console_scripts": ["greet=hello:greet"],
     # },
