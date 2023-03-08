@@ -8,7 +8,7 @@ type Points = Vec<[f64; 2]>;
 
 #[pymodule]
 fn rconcave(_py: Python, m: &PyModule) -> PyResult<()> {
-    /// concave_hull(points: Vec[n, 2], concavity: float, /) -> Vec[m, 2]
+    /// concave_hull(points, concavity, /)
     /// --
     ///
     /// Finds the concave path around the points, the concavity factor controlls how concave/jagged the result is.
