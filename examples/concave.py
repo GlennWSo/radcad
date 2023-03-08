@@ -10,7 +10,7 @@ def pad(arr):
 def random_concave(factor):
 
     # generate random points
-    randp = np.random.rand(50, 2)
+    randp = np.random.rand(1000, 2)
     rand_mesh = pv.PolyData(pad(randp))
     # rand_mesh.plot() #  inspect input
 
