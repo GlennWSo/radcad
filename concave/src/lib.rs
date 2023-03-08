@@ -8,13 +8,17 @@ type Points = Vec<[f64; 2]>;
 
 #[pymodule]
 fn rconcave(_py: Python, m: &PyModule) -> PyResult<()> {
-    /// concave_hull(points, concavity, /)
-    /// --
-    ///
     /// Finds the concave path around the points, the concavity factor controlls how concave/jagged the result is.
     /// concavity=0 -> the uncomprimising concave path. 
     /// concavity=big num -> the convex path
+    ///
+    /// # args: 
+    /// points: Vec<f64>[n, 2]
+    /// concavity: f64
+    ///
+    /// returns points: Vec<f64>[m, 2]
     #[pyfn(m)]
+    #[text_signature = "(points, concavity, /)"]
     fn concave_hull(points: Points, concavity: f64 ) -> PyResult<Points> {
         let m_points: MultiPoint<f64> = points.into();
 
