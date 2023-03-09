@@ -18,7 +18,9 @@ def add_draft_angles(mesh, ref_normal, name="angle", degrees=False, face=True):
     mesh["angle"] = core.normals2angles(normals, ref_normal, degrees)
 
 
-def add_draft_mask(mesh, ref_normal, value, name="Top", degrees=False, face=True):
+def add_draft_mask(
+    mesh, ref_normal, value, invert=False, name="Top", degrees=False, face=True
+):
     if face:
         normals = mesh.face_normals
     else:
@@ -27,4 +29,4 @@ def add_draft_mask(mesh, ref_normal, value, name="Top", degrees=False, face=True
     if degrees:
         value = np.deg2rad(value)
 
-    mesh[name] = core.draft_mask(normals, ref_normal, value)
+    mesh[name] = core.draft_mask(normals, ref_normal, value, invert)

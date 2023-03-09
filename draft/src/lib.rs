@@ -68,13 +68,18 @@ fn rdraft(_py: Python, m: &PyModule) -> PyResult<()> {
         Ok(res.data.into())
     }
 
-
+    
+    /// returns a mask: Vec<bool>
     #[pyfn(m)]
     #[pyo3(text_signature = "(normals, ref_normal, value, invert,/)")]
-    fn draft_mask(normals: Normals, ref_normal: Normal, value: f64) -> PyResult<Mask> {
+    fn draft_mask(normals: Normals, ref_normal: Normal, value: f64, invert:bool) -> PyResult<Mask> {
         let _normals = _Normals::from_fn(normals.len(), |r, c| normals[r][c]);
-        let _ref_normal = _Normal::from_row_slice(&ref_normal);
-        let res = _normals2angles(_normals, _ref_normal);
+        let mut _ref_normal = _Normal::from_row_slice(&ref_normal);
+        if invert {
+            _ref_normal.neg_mut()
+        }
+
+        let res = _normals2angles(_normals, _ref_normal); 
         
         let mask =  res.map(|e| e < value);
         Ok(mask.data.into())
