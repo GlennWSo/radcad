@@ -9,7 +9,7 @@ import pyvista as pv
 from . import core
 
 
-def overhangs(mesh: pv.PolyData, ref_normal, name="blocked"):
+def overhangs(mesh: pv.PolyData, ref_normal):
     assert mesh.is_all_triangles, "overhangs expect triangulted mesh"
     tris = mesh.faces.reshape((-1, 4))[:, 1:]
     res = core.overhangs(mesh.points, tris, ref_normal)
@@ -26,9 +26,7 @@ def draft_angles(mesh, ref_normal, degrees=False, face=True):
     return res
 
 
-def draft_mask(
-    mesh, ref_normal, value, invert=False, name="Top", degrees=False, face=True
-):
+def draft_mask(mesh, ref_normal, value, invert=False, degrees=False, face=True):
     if face:
         normals = mesh.face_normals
     else:
