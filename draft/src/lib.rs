@@ -33,9 +33,11 @@ type Mask = Vec<bool>;
 
 
 fn _overhangs(mesh: &TriMesh, dir: _Normal) -> Vec<usize>{
+    let small: f64 = 0.01;
+    let perturbation = dir * small;
      mesh.vertices()
         .iter()
-        .map(|v| Ray::new(*v, dir))
+        .map(|v| Ray::new((*v) + perturbation , dir))
         .enumerate()
         .filter_map(|(i, ray)| {
             if mesh.intersects_local_ray(&ray, f64::INFINITY) {
