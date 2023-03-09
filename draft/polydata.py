@@ -38,4 +38,4 @@ def draft_mask(
         value = np.deg2rad(value)
 
     res = core.draft_mask(normals, ref_normal, value, invert)
-    return res
+    return np.array(res)

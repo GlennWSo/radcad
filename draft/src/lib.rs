@@ -32,30 +32,26 @@ type Angles = Vec<f64>;
 type Mask = Vec<bool>;
 
 
-fn _overhangs(mesh: &TriMesh, dir: _Normal) -> Vec<usize>{
+fn _overhangs(mesh: &TriMesh, dir: _Normal) -> Mask{
     let small: f64 = 0.01;
     let perturbation = dir * small;
      mesh.vertices()
         .iter()
-        .map(|v| Ray::new((*v) + perturbation , dir))
-        .enumerate()
-        .filter_map(|(i, ray)| {
-            if mesh.intersects_local_ray(&ray, f64::INFINITY) {
-                Some(i)
-            } else {
-                None
-        }}).collect()
+        .map(|v| {
+            let ray = Ray::new((*v) + perturbation , dir);
+            mesh.intersects_local_ray(&ray, f64::INFINITY)
+        })
+        .collect()
 }
 
 
 #[pymodule]
 fn rdraft(_py: Python, m: &PyModule) -> PyResult<()> {
 
-    /// return indices of points that have blocked by overhaning trifaces when
-    /// raycast along normal
+    /// return mask: Vec<bool> of points indicating if the blocked by trifaces along normal
     #[pyfn(m)]
     #[pyo3(text_signature = "(points, tris, normal, /)")]
-    fn overhangs(points: Points, tris: Faces, normal: Normal) -> PyResult<Vec<usize>> {
+    fn overhangs(points: Points, tris: Faces, normal: Normal) -> PyResult<Mask> {
         let mesh = mesh2trimesh((points, tris));
         let res = _overhangs(&mesh, normal.into());
         Ok(res)
