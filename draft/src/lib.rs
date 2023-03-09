@@ -1,5 +1,5 @@
 extern crate nalgebra as na;
-use na::{DVector, Vector3, OMatrix, Dyn, U3};
+use na::{DVector, Vector3, OMatrix, Dyn, U3 };
 
 use pyo3::prelude::*;
 
@@ -10,16 +10,24 @@ type _Normals = OMatrix<f64, Dyn, U3>;
 type _Angles = DVector<f64>;
 
 
- fn _normals2angles(normals: _Normals, ref_normal: _Normal) -> _Angles{
+const RAD2DEG: f64 = 180.0 / std::f64::consts::PI;
+const DEG2RAD: f64 = std::f64::consts::PI / 180.0;
+
+
+fn _normals2angles(normals: _Normals, ref_normal: _Normal) -> _Angles{
     let product = normals * ref_normal;
     product.map(|e| e.acos())
 }
 
+fn rads2degs(angles: _Angles) -> _Angles{
+    angles.map(|e| RAD2DEG*e)
+}
 
 type Normal = [f64; 3];
 /// used to represent angle in radians
 type Normals = Vec<Normal>;
 type Angles = Vec<f64>;
+type Mask = Vec<bool>;
 
 #[pymodule]
 fn rdraft(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -34,12 +42,27 @@ fn rdraft(_py: Python, m: &PyModule) -> PyResult<()> {
     ///
     /// returns angles: Vec[r=n]
     #[pyfn(m)]
-    #[pyo3(text_signature = "(normals, ref_normal, /)")]
-    fn normals2angles(normals: Normals, ref_normal: Normal) -> PyResult<Angles> {
+    #[pyo3(text_signature = "(normals, ref_normal, degrees, /)")]
+    fn normals2angles(normals: Normals, ref_normal: Normal, degrees: bool) -> PyResult<Angles> {
         let _normals = _Normals::from_fn(normals.len(), |r, c| normals[r][c]);
         let _ref_normal = _Normal::from_row_slice(&ref_normal);
         let res = _normals2angles(_normals, _ref_normal);
+        if degrees{
+            return Ok(rads2degs(res).data.into())
+        }
         Ok(res.data.into())
+    }
+
+
+    #[pyfn(m)]
+    #[pyo3(text_signature = "(normals, ref_normal, value, invert,/)")]
+    fn draft_mask(normals: Normals, ref_normal: Normal, value: f64) -> PyResult<Mask> {
+        let _normals = _Normals::from_fn(normals.len(), |r, c| normals[r][c]);
+        let _ref_normal = _Normal::from_row_slice(&ref_normal);
+        let res = _normals2angles(_normals, _ref_normal);
+        
+        let mask =  res.map(|e| e < value);
+        Ok(mask.data.into())
     }
 
     Ok(())
