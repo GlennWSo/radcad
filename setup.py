@@ -5,15 +5,15 @@ from setuptools_rust import Binding, RustExtension
 
 setup(
     name="rscad",
-    version="0.0.1",
+    version="0.0.2",
     description="rusty cad utils",
     author="Glenn",
     author_email="gward@python.net",
     rust_extensions=[
         RustExtension(
-            "rscad.hello.rhello",
+            "rscad.boolean.rboolean",
             binding=Binding.PyO3,
-            path="./hello/Cargo.toml",
+            path="./boolean/Cargo.toml",
         ),
         RustExtension(
             "rscad.concave.rconcave",
@@ -21,9 +21,14 @@ setup(
             path="./concave/Cargo.toml",
         ),
         RustExtension(
-            "rscad.boolean.rboolean",
+            "rscad.draft.rdraft",
             binding=Binding.PyO3,
-            path="./boolean/Cargo.toml",
+            path="./draft/Cargo.toml",
+        ),
+        RustExtension(
+            "rscad.hello.rhello",
+            binding=Binding.PyO3,
+            path="./hello/Cargo.toml",
         ),
     ],
     packages=[
