@@ -11,11 +11,11 @@ fn prepare_mesh(mesh: &mut TriMesh) {
 }
 
 
-type Points = Vec<[f64; 3]>;
-type Faces = Vec<[u32; 3]>;
+pub type Points = Vec<[f64; 3]>;
+pub type Faces = Vec<[u32; 3]>;
 type Mesh = (Points, Faces);
 
-fn mesh2trimesh(mut m: Mesh) -> TriMesh {
+pub fn mesh2trimesh(mut m: Mesh) -> TriMesh {
     let points =
         m.0.drain(..)
             .map(|p| Point3::new(p[0], p[1], p[2]))
@@ -26,7 +26,7 @@ fn mesh2trimesh(mut m: Mesh) -> TriMesh {
     tri
 }
 
-fn trimesh2mesh(trimesh: TriMesh) -> Mesh {
+pub fn trimesh2mesh(trimesh: TriMesh) -> Mesh {
     let points = trimesh
         .vertices()
         .iter()

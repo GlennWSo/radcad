@@ -3,6 +3,8 @@ extern crate nalgebra as na;
 use na::{DVector, Vector3, OMatrix, Dyn, U3 };
 use parry3d_f64::{shape::TriMesh, query::{Ray, RayCast}};
 
+use rboolean::{Faces, Points, mesh2trimesh};
+
 
 type _Normal = Vector3<f64>;
 /// used to represent angle in radians
@@ -30,7 +32,7 @@ type Angles = Vec<f64>;
 type Mask = Vec<bool>;
 
 
-fn _overhangs(mesh: TriMesh, dir: _Normal) -> Vec<usize>{
+fn _overhangs(mesh: &TriMesh, dir: _Normal) -> Vec<usize>{
      mesh.vertices()
         .iter()
         .map(|v| Ray::new(*v, dir))
@@ -46,6 +48,18 @@ fn _overhangs(mesh: TriMesh, dir: _Normal) -> Vec<usize>{
 
 #[pymodule]
 fn rdraft(_py: Python, m: &PyModule) -> PyResult<()> {
+
+    /// return indices of points that have blocked by overhaning trifaces when
+    /// raycast along normal
+    #[pyfn(m)]
+    #[pyo3(text_signature = "(points, tris, normal, /)")]
+    fn overhangs(points: Points, tris: Faces, normal: Normal) -> PyResult<Vec<usize>> {
+        let mesh = mesh2trimesh((points, tris));
+        let res = _overhangs(&mesh, normal.into());
+        Ok(res)
+    }
+    
+    
     /// calculates angles in radians for normals compared to ref_normal
     ///
     /// warning: 
