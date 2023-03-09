@@ -3,9 +3,13 @@
 from setuptools import setup
 from setuptools_rust import Binding, RustExtension
 
+with open("VERSION", mode="r") as file:
+    version = file.read()
+
+
 setup(
     name="rscad",
-    version="0.0.2",
+    version=version,
     description="rusty cad utils",
     author="Glenn",
     author_email="gward@python.net",
