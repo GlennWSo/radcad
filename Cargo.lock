@@ -143,6 +143,7 @@ name = "draft"
 version = "0.1.0"
 dependencies = [
  "nalgebra",
+ "parry3d-f64",
  "pyo3",
  "rayon",
 ]

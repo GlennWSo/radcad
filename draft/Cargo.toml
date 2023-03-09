@@ -14,3 +14,4 @@ crate-type = ["cdylib", "rlib"]
 nalgebra = "0.32.2"
 pyo3 = { version = "0.15.1", features = ["extension-module"] }
 rayon = "1.7.0"
+parry3d-f64 = { git = "https://github.com/GlennWSo/parry", branch = "track_index" }

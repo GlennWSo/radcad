@@ -1,7 +1,7 @@
+use pyo3::prelude::*;
 extern crate nalgebra as na;
 use na::{DVector, Vector3, OMatrix, Dyn, U3 };
-
-use pyo3::prelude::*;
+use parry3d_f64::{shape::TriMesh, query::{Ray, RayCast}};
 
 
 type _Normal = Vector3<f64>;
@@ -11,7 +11,7 @@ type _Angles = DVector<f64>;
 
 
 const RAD2DEG: f64 = 180.0 / std::f64::consts::PI;
-const DEG2RAD: f64 = std::f64::consts::PI / 180.0;
+// const DEG2RAD: f64 = std::f64::consts::PI / 180.0;
 
 
 fn _normals2angles(normals: _Normals, ref_normal: _Normal) -> _Angles{
@@ -28,6 +28,21 @@ type Normal = [f64; 3];
 type Normals = Vec<Normal>;
 type Angles = Vec<f64>;
 type Mask = Vec<bool>;
+
+
+fn _overhangs(mesh: TriMesh, dir: _Normal) -> Vec<usize>{
+     mesh.vertices()
+        .iter()
+        .map(|v| Ray::new(*v, dir))
+        .enumerate()
+        .filter_map(|(i, ray)| {
+            if mesh.intersects_local_ray(&ray, f64::INFINITY) {
+                Some(i)
+            } else {
+                None
+        }}).collect()
+}
+
 
 #[pymodule]
 fn rdraft(_py: Python, m: &PyModule) -> PyResult<()> {
