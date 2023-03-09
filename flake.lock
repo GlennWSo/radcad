@@ -372,17 +372,17 @@
         "flake-utils": "flake-utils_2"
       },
       "locked": {
-        "lastModified": 1677744866,
-        "narHash": "sha256-lPsl/uwO8j9rxoWPZVsAWLn95SDhDWBYayBcA9H6qU8=",
+        "lastModified": 1678104599,
+        "narHash": "sha256-BVEsU7otxYUhI50N28Xm9KXXhGt+ODlE5B97m0rpQ2g=",
         "owner": "GlennWSo",
         "repo": "pyvista",
-        "rev": "c871273f8c75cc78b187601048aca46554fd4336",
+        "rev": "d1b5e66928fb3c85d449fd44a04f74139e43d1d9",
         "type": "github"
       },
       "original": {
         "owner": "GlennWSo",
         "repo": "pyvista",
-        "rev": "c871273f8c75cc78b187601048aca46554fd4336",
+        "rev": "d1b5e66928fb3c85d449fd44a04f74139e43d1d9",
         "type": "github"
       }
     },

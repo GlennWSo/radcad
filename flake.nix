@@ -6,7 +6,7 @@
       type = "github";
       owner = "GlennWSo";
       repo = "pyvista";
-      rev = "c871273f8c75cc78b187601048aca46554fd4336";
+      rev = "d1b5e66928fb3c85d449fd44a04f74139e43d1d9";
     };
 
   };
@@ -38,6 +38,9 @@
           py.twine
           py.build
           py.wheel
+          py.venvShellHook
+          py.ipython
+          py.GitPython
         ];
         
     
@@ -50,18 +53,8 @@
 
             buildInputs = runTime ++ buildTime ++ devTools;
 
-            shellHook = ''
-              SOURCE_DATE_EPOCH=$(date +%s)
-
-              if [ -d "${venvDir}" ]; then
-                echo "Skipping venv creation, '${venvDir}' already exists"
-                source "${venvDir}/bin/activate"
-              else
-                echo "Creating new venv environment in path: '${venvDir}'"
-                # Note that the module venv was only introduced in python 3, so for 2.7
-                # this needs to be replaced with a call to virtualenv
-                ${py.python.interpreter} -m venv "${venvDir}"
-                source "${venvDir}/bin/activate"
+            postVenvCreation = ''
+              unset SOURCE_DATE_EPOCH
                 pip install  .               
                 pip install -e .    
               fi
