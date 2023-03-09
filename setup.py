@@ -34,11 +34,13 @@ setup(
     packages=[
         "rscad.hello",
         "rscad.boolean",
+        "rscad.draft",
     ],
     # tell setup that the root python source is inside py folder
     package_dir={
         "rscad.hello": "hello/py",
         "rscad.boolean": "boolean",
+        "rscad.draft": "draft",
     },
     install_requires=["pyvista", "numpy"],
     # entry_points={
