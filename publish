@@ -6,12 +6,16 @@ set ver "$(cat VERSION)"
 
 echo creating release $ver
 
-# echo "user: $user pass: $pass "
-git tag -a $ver || exit
-git push origin $ver  || exit
+git diff --exit-code; or echo "you have uncomited changes" && exit 1
+git diff --cached --exit-code; or echo "you have staged changes"  && exit 1 
+
+echo local git is clean
+
+git tag -a $ver || exit 1
 
 rm -rf dist
 python setup.py sdist bdist_wheel
 python dist_rename.py 
 
-twine upload -u $user -p $pass dist/* || exit
+twine upload -u $user -p $pass dist/* || git tag -d $ver  && exit 1
+git push origin $ver  || exit 1
