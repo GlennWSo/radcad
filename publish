@@ -17,5 +17,7 @@ rm -rf dist
 python setup.py sdist bdist_wheel
 python dist_rename.py 
 
-twine upload -u $user -p $pass dist/* || git tag -d $ver  && exit 1
+twine upload -u $user -p $pass dist/*; or git tag -d $ver  && exit 1
 git push origin $ver  || exit 1
+
+echo "great succes :)"
